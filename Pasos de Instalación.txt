@@ -1,0 +1,71 @@
+Con guías de error!
+TP-LINK TL-WN722N Adaptador USB versión 2 o 3 Kali Linux FIJO usando Virtual Box! (Septiembre de 2019)
+
+Sistema operativo: Windows 10
+Kali Linux 2.0 amd64 (www.kali.org/downloads/) está instalado en
+Oracle Virtual box 6.0.12 (www.virtualbox.org/) con
+VirtualBox 6.0.12 Oracle VM VirtualBox Extension Pack (www.virtualbox .org / wiki / Downloads)
+El núcleo de Kali Linux es 5.2.0
+Adaptador USB: TP-LINK TL-WN722N versión 3 o 2 mismo chipset
+Realtek RTL8188EUS versión 2 chipset y Realtek RTL8188EUS versión 3 chipset
+
+
+
+[Escriba esto en su Terminal para la instalación]
+
+00] nano /etc/apt/sources.list
+Ecriba esta linea en el archivo: deb http://http.kali.org/kali kali-rolling main non-free contrib
+
+01] apt update && apt upgrade
+
+después de actualizar, reinicie primero su computadora
+después de actualizar el kali, primero debe verificar su núcleo escribiendo el Terminal: uname -r
+En mi caso, el kernel es 5.2.0 pero antes es 4.9.0, por lo que el clon git de rtl8188eus no coincidió, 
+por lo que debe hacer coincidir su KERNEL con el chipset rtl8188eus 
+si no obtiene el error en el Paso 7] iwconfig wlan0 monitor de modo:
+(Error para inalámbrico solicitar "Modo de configuración" (8B06): SET falló en el dispositivo wlan0; Operación no permitida)
+(Error para la solicitud inalámbrica "Modo de configuración" (8B06): SET falló en el dispositivo wlan0; argumento no válido)
+(ERROR :: solicitud inalámbrica "Modo de configuración" (8B06):
+SET falló en el dispositivo (nombre del dispositivo); Operación no admitida )
+
+02] apt install -y bc linux-headers-amd64
+
+a veces ya se ha instalado porque ya se actualizó el gestor de paquetes en el Paso 1
+Error: no se pudo encontrar el paquete bc, solo se regresó a paso 1 apt update && apt upgrade y asegúrese de tener acceso a internet para descargar todas las actualizaciones.
+
+03] Descargue el controlador
+github.com/aircrack-ng/rtl8188eus.git
+o use el archivo de mi repositorio luisangelzerocool
+
+el controlador del chipset rtl8188eus debe corresponder a su versión de kernel de kali, si por casualidad se actualiza a 5.3.0 kernel plus y superior, 
+vaya a Google con la palabra clave: rtl8188eus github y encuentre la última versión y git clone para arreglar el ERROR del paso 07: monitor de modo iwconfig wlan0
+
+04] cd rtl8188eus
+05] echo "blacklist r8188eu" > /etc/modprobe.d/realtek.conf
+
+06] make && make install
+Error: no puede stat 8188eu.ko
+si se produjo un error, simplemente regrese al paso 01 con reiniciar PC o reiniciar virtual box
+
+07] [Activando el modo de monitor]
+ifconfig wlan0 down
+airmon-ng check kill
+iwconfig wlan0 mode monitor
+ifconfig wlan0 up
+
+en este punto si obtiene un error solo reinicie su computadora o caja virtual, luego comience el paso 07
+si el error vuelve nuevamente al paso 01 apt udate && upgrade para completar las actualizaciones que faltan.
+
+airodump-ng wlan0
+
+08] [Probar la inyección de paquetes]
+aireplay-ng --test wlan0
+
+===============================
+
+
+
+
+deb http://kali.download/kali kali-rolling InRelease
+https://www.youtube.com/watch?v=NhHiXzqkx_s
+
